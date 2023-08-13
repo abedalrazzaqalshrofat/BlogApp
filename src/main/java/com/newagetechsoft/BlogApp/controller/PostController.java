@@ -1,20 +1,22 @@
 package com.newagetechsoft.BlogApp.controller;
 
+import com.newagetechsoft.BlogApp.model.Post;
 import com.newagetechsoft.BlogApp.payload.PostDto;
-import com.newagetechsoft.BlogApp.services.PostService;
+import com.newagetechsoft.BlogApp.services.BasicService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
 
-    private final PostService postService;
+    private final BasicService<PostDto,Long> postService;
 
-    public PostController(PostService postService) {
+    public PostController(BasicService<PostDto,Long> postService) {
         this.postService = postService;
     }
 
@@ -26,5 +28,15 @@ public class PostController {
     @GetMapping()
     public ResponseEntity<List<PostDto>> getAllPosts(){
         return new ResponseEntity<>(postService.getAllPosts(),HttpStatus.OK);
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDto> getPostById(@PathVariable("postId") Long postId){
+        return ResponseEntity.ok(postService.getPostById(postId));
+    }
+
+    @PutMapping("/{postId}")
+    public ResponseEntity<PostDto> updatePostById(@RequestBody PostDto postDto, @PathVariable("postId") Long postId){
+        return new ResponseEntity<>(postService.updatePost(postDto,postId),HttpStatus.OK);
     }
 }
