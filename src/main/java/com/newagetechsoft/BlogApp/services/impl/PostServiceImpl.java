@@ -62,9 +62,14 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
     }
 
     @Override
-    public ResponsePage<PostDto> getAllPosts(int pageNumber, int pageSize, String sortBy) {
+    public ResponsePage<PostDto> getAllPosts(int pageNumber, int pageSize, String sortBy, String sortDirection) {
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Sort sort = Sort.Direction.valueOf(sortDirection.toUpperCase()).isAscending() ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Post> page = postRepository.findAll(pageable);
 
         ResponsePage<PostDto> responsePage = new ResponsePage<>();
