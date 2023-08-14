@@ -11,5 +11,5 @@ public interface BasicService<T, S> {
     T getPostById(S s);
     T updatePost(T dto, S s);
     void deleteById(S id);
-    ResponsePage<T> getAllPosts(int pageNumber, int pageSize);
+    ResponsePage<T> getAllPosts(int pageNumber, int pageSize, String sortBy);
 }

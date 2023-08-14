@@ -9,6 +9,7 @@ import com.newagetechsoft.BlogApp.services.BasicService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -61,9 +62,9 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
     }
 
     @Override
-    public ResponsePage<PostDto> getAllPosts(int pageNumber, int pageSize) {
+    public ResponsePage<PostDto> getAllPosts(int pageNumber, int pageSize, String sortBy) {
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
         Page<Post> page = postRepository.findAll(pageable);
 
         ResponsePage<PostDto> responsePage = new ResponsePage<>();
