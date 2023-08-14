@@ -10,7 +10,7 @@ import javax.persistence.*;
 @ToString
 @EqualsAndHashCode
 @Entity
-@Table(name = "post", uniqueConstraints = { @UniqueConstraint(columnNames = "title")})
+@Table(name = "post", uniqueConstraints = { })
 public class Post {
 
     @Id

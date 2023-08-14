@@ -5,6 +5,9 @@ import com.newagetechsoft.BlogApp.model.Post;
 import com.newagetechsoft.BlogApp.payload.PostDto;
 import com.newagetechsoft.BlogApp.repositories.PostRepository;
 import com.newagetechsoft.BlogApp.services.BasicService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,24 +51,31 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
         Post post = postRepository.save(Optional.ofNullable(dto).map(it ->
              new Post(id,dto.getContent(),dto.getDescription(),dto.getTitle())
         ).orElseThrow(() -> new ResourceNotFoundException("Post","Post Id",String.valueOf(id))));
-        return Optional.of(post).map(it -> new PostDto(post.getContent(), post.getTitle(), post.getDescription())).orElse(dto);
+        return Optional.of(post).map(this::mapPostToDto).orElse(dto);
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
-        return postRepository.findAll().stream().map(post -> {
-            PostDto postDto = new PostDto();
-            postDto.setTitle(post.getTitle());
-            postDto.setDescription(post.getDescription());
-            postDto.setContent(post.getContent());
-            return postDto;
-        }).collect(Collectors.toList());
+    public void deleteById(Long id) {
+        postRepository.deleteById(id);
+    }
+
+    @Override
+    public List<PostDto> getAllPosts(int pageNumber, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Post> page = postRepository.findAll(pageable);
+
+        List<Post> postList = page.getContent();
+
+        return postList.stream().map(this::mapPostToDto)
+                .collect(Collectors.toList());
     }
 
     private PostDto mapPostToDto(Post post){
         return Optional.ofNullable(post)
                 .map(it -> {
                     PostDto postDto = new PostDto();
+                    postDto.setId(it.getId());
                     postDto.setTitle(it.getTitle());
                     postDto.setContent(it.getContent());
                     postDto.setDescription(it.getDescription());
@@ -77,6 +87,7 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
         return Optional.ofNullable(postDto)
                 .map(it -> {
                     Post post = new Post();
+                    post.setId(it.getId());
                     post.setTitle(it.getTitle());
                     post.setContent(it.getContent());
                     post.setDescription(it.getDescription());
