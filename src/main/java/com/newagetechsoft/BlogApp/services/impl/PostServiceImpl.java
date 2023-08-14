@@ -3,6 +3,7 @@ package com.newagetechsoft.BlogApp.services.impl;
 import com.newagetechsoft.BlogApp.exception.ResourceNotFoundException;
 import com.newagetechsoft.BlogApp.model.Post;
 import com.newagetechsoft.BlogApp.payload.PostDto;
+import com.newagetechsoft.BlogApp.payload.ResponsePage;
 import com.newagetechsoft.BlogApp.repositories.PostRepository;
 import com.newagetechsoft.BlogApp.services.BasicService;
 import org.springframework.data.domain.Page;
@@ -60,15 +61,22 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
     }
 
     @Override
-    public List<PostDto> getAllPosts(int pageNumber, int pageSize) {
+    public ResponsePage<PostDto> getAllPosts(int pageNumber, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Post> page = postRepository.findAll(pageable);
 
+        ResponsePage<PostDto> responsePage = new ResponsePage<>();
         List<Post> postList = page.getContent();
-
-        return postList.stream().map(this::mapPostToDto)
+        List<PostDto> postDtoList = postList.stream().map(this::mapPostToDto)
                 .collect(Collectors.toList());
+        responsePage.setContentResponse(postDtoList);
+        responsePage.setPageNumber(page.getNumber());
+        responsePage.setPageSize(page.getSize());
+        responsePage.setTotalPages(page.getTotalPages());
+        responsePage.setTotalElement(page.getTotalElements());
+        responsePage.setLast(page.isLast());
+        return responsePage;
     }
 
     private PostDto mapPostToDto(Post post){

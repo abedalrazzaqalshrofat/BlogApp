@@ -2,6 +2,7 @@ package com.newagetechsoft.BlogApp.controller;
 
 import com.newagetechsoft.BlogApp.model.Post;
 import com.newagetechsoft.BlogApp.payload.PostDto;
+import com.newagetechsoft.BlogApp.payload.ResponsePage;
 import com.newagetechsoft.BlogApp.services.BasicService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,9 @@ public class PostController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<PostDto>> getAllPosts(
-            @RequestParam(required = false, name = "pageNumber" ,defaultValue = "0") int pageNumber,
-            @RequestParam(required = false, name = "pageSize" ,defaultValue = "10") int pageSize
+    public ResponseEntity<ResponsePage<PostDto>> getAllPosts(
+            @RequestParam(name = "pageNumber" ,defaultValue = "0") int pageNumber,
+            @RequestParam(name = "pageSize" ,defaultValue = "10") int pageSize
     ){
         return new ResponseEntity<>(postService.getAllPosts(pageNumber, pageSize),HttpStatus.OK);
     }
