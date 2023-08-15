@@ -1,5 +1,6 @@
 package com.newagetechsoft.BlogApp.controller;
 
+import com.newagetechsoft.BlogApp.exception.ResourceNotFoundException;
 import com.newagetechsoft.BlogApp.payload.PostDto;
 import com.newagetechsoft.BlogApp.payload.ResponsePage;
 import com.newagetechsoft.BlogApp.services.PostService;
@@ -34,6 +35,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<PostDto> getPostById(@PathVariable("postId") Long postId){
         return ResponseEntity.ok(postService.getPostById(postId));
     }
