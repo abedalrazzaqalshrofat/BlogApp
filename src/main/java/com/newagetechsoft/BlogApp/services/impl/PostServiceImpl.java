@@ -5,7 +5,8 @@ import com.newagetechsoft.BlogApp.model.Post;
 import com.newagetechsoft.BlogApp.payload.PostDto;
 import com.newagetechsoft.BlogApp.payload.ResponsePage;
 import com.newagetechsoft.BlogApp.repositories.PostRepository;
-import com.newagetechsoft.BlogApp.services.BasicService;
+import com.newagetechsoft.BlogApp.services.PostService;
+import com.newagetechsoft.BlogApp.util.MapDtoEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class PostServiceImpl implements BasicService<PostDto,Long> {
+public class PostServiceImpl implements PostService<PostDto,Long>, MapDtoEntity<Post,PostDto> {
 
     private final PostRepository postRepository;
 
@@ -45,15 +46,14 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
     public PostDto getPostById(Long postId) {
        Post post = postRepository.findById(postId)
                .orElseThrow(() -> new ResourceNotFoundException("Post","postId",String.valueOf(postId)));
-       return mapPostToDto(post);
+       return mapEntityToDto(post);
     }
 
     @Override
     public PostDto updatePost(PostDto dto, Long id) {
-        Post post = postRepository.save(Optional.ofNullable(dto).map(it ->
-             new Post(id,dto.getContent(),dto.getDescription(),dto.getTitle())
-        ).orElseThrow(() -> new ResourceNotFoundException("Post","Post Id",String.valueOf(id))));
-        return Optional.of(post).map(this::mapPostToDto).orElse(dto);
+        Post post = postRepository.save(Optional.ofNullable(dto).map(this::mapDtoToEntity)
+                .orElseThrow(() -> new ResourceNotFoundException("Post","Post Id",String.valueOf(id))));
+        return Optional.of(post).map(this::mapEntityToDto).orElse(dto);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
     }
 
     @Override
-    public ResponsePage<PostDto> getAllPosts(int pageNumber, int pageSize, String sortBy, String sortDirection) {
+    public ResponsePage<PostDto> getAllPost(int pageNumber, int pageSize, String sortBy, String sortDirection) {
 
         Sort sort = Sort.Direction.valueOf(sortDirection.toUpperCase()).isAscending() ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -74,7 +74,7 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
 
         ResponsePage<PostDto> responsePage = new ResponsePage<>();
         List<Post> postList = page.getContent();
-        List<PostDto> postDtoList = postList.stream().map(this::mapPostToDto)
+        List<PostDto> postDtoList = postList.stream().map(this::mapEntityToDto)
                 .collect(Collectors.toList());
         responsePage.setContentResponse(postDtoList);
         responsePage.setPageNumber(page.getNumber());
@@ -85,7 +85,8 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
         return responsePage;
     }
 
-    private PostDto mapPostToDto(Post post){
+    @Override
+    public PostDto mapEntityToDto(Post post){
         return Optional.ofNullable(post)
                 .map(it -> {
                     PostDto postDto = new PostDto();
@@ -97,7 +98,8 @@ public class PostServiceImpl implements BasicService<PostDto,Long> {
                 }).orElse(new PostDto());
     }
 
-    private Post mapPostDtoToPost(PostDto postDto){
+    @Override
+    public Post mapDtoToEntity(PostDto postDto){
         return Optional.ofNullable(postDto)
                 .map(it -> {
                     Post post = new Post();

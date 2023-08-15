@@ -1,23 +1,20 @@
 package com.newagetechsoft.BlogApp.controller;
 
-import com.newagetechsoft.BlogApp.model.Post;
 import com.newagetechsoft.BlogApp.payload.PostDto;
 import com.newagetechsoft.BlogApp.payload.ResponsePage;
-import com.newagetechsoft.BlogApp.services.BasicService;
+import com.newagetechsoft.BlogApp.services.PostService;
+import com.newagetechsoft.BlogApp.util.AppConstant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
 
-    private final BasicService<PostDto,Long> postService;
+    private final PostService<PostDto,Long> postService;
 
-    public PostController(BasicService<PostDto,Long> postService) {
+    public PostController(PostService<PostDto,Long> postService) {
         this.postService = postService;
     }
 
@@ -28,12 +25,12 @@ public class PostController {
 
     @GetMapping()
     public ResponseEntity<ResponsePage<PostDto>> getAllPosts(
-            @RequestParam(name = "pageNumber" ,defaultValue = "0") int pageNumber,
-            @RequestParam(name = "pageSize" ,defaultValue = "10") int pageSize,
-            @RequestParam(name = "sortBy", defaultValue = "id") String sortBy,
-            @RequestParam(name = "sortDir", defaultValue = "asc") String sortDirection
+            @RequestParam(name = "pageNumber" ,defaultValue = AppConstant.DEFAULT_START_PAGE_NUMBER) int pageNumber,
+            @RequestParam(name = "pageSize" ,defaultValue = AppConstant.DEFAULT_PAGE_SIZE) int pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstant.DEFAULT_SORT_BY_PROPERTY) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstant.DEFAULT_SORT_DIRECTION) String sortDirection
     ){
-        return new ResponseEntity<>(postService.getAllPosts(pageNumber, pageSize,sortBy,sortDirection),HttpStatus.OK);
+        return new ResponseEntity<>(postService.getAllPost(pageNumber, pageSize,sortBy,sortDirection),HttpStatus.OK);
     }
 
     @GetMapping("/{postId}")

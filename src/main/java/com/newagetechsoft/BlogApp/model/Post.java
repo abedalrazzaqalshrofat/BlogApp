@@ -3,6 +3,8 @@ package com.newagetechsoft.BlogApp.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,4 +24,6 @@ public class Post {
     private String description;
     @Column(name = "content", nullable = false)
     private String content;
+    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    private Set<Comment> comments = new HashSet<>();
 }
