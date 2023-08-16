@@ -35,7 +35,6 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<PostDto> getPostById(@PathVariable("postId") Long postId){
         return ResponseEntity.ok(postService.getPostById(postId));
     }
