@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ExceptionDetails> handle(ResourceNotFoundException resourceNotFoundException,
+    public ResponseEntity<ExceptionDetails> handleResourceNotFoundException(ResourceNotFoundException resourceNotFoundException,
                                                    WebRequest webRequest){
         ExceptionDetails exceptionDetails = new ExceptionDetails();
         exceptionDetails.setTimestamp(LocalDateTime.now());
@@ -21,5 +21,23 @@ public class GlobalExceptionHandler {
         exceptionDetails.setDetail(webRequest.getDescription(false));
 
         return new ResponseEntity<>(exceptionDetails, HttpStatus.NOT_FOUND);
+    }
+    /*
+        .
+        .
+        .
+        Other Exceptions that we can add them here to be handled
+        .
+        .
+        .
+     */
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionDetails> handleGlobalException(Exception exception, WebRequest webRequest){
+        ExceptionDetails exceptionDetails = new ExceptionDetails();
+        exceptionDetails.setMessage(exception.getMessage());
+        exceptionDetails.setTimestamp(LocalDateTime.now());
+        exceptionDetails.setDetail(webRequest.getDescription(false));
+        return new ResponseEntity<>(exceptionDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
