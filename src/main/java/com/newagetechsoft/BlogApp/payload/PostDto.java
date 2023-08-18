@@ -1,6 +1,7 @@
 package com.newagetechsoft.BlogApp.payload;
 
 import com.newagetechsoft.BlogApp.model.Comment;
+import com.newagetechsoft.BlogApp.validation.TitleConstrain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class PostDto {
 
     @NotNull(message = "the description of post should not be empty or blank spaces")
     @NotBlank
+    @TitleConstrain(message = "Title should be one of the following topics")
     private String title;
 
     @NotNull
