@@ -9,4 +9,10 @@ public interface CommentService {
 
     CommentDto createComment(CommentDto commentDto, Long postId);
 
+    ResponsePage<CommentDto> getAllCommentsForPost(Long postId, int pageNumber, int pageSize,
+                                                   String sortBy, String sortDir);
+
+    CommentDto getCommentById(Long postId, Long commentId);
+
+
 }

@@ -1,7 +1,10 @@
+
 package com.newagetechsoft.BlogApp.services.impl;
 
 import com.newagetechsoft.BlogApp.exception.ResourceNotFoundException;
+import com.newagetechsoft.BlogApp.model.Comment;
 import com.newagetechsoft.BlogApp.model.Post;
+import com.newagetechsoft.BlogApp.payload.CommentDto;
 import com.newagetechsoft.BlogApp.payload.PostDto;
 import com.newagetechsoft.BlogApp.payload.ResponsePage;
 import com.newagetechsoft.BlogApp.repositories.PostRepository;
@@ -28,17 +31,14 @@ public class PostServiceImpl implements PostService<PostDto,Long>, MapDtoEntity<
 
     @Override
     public PostDto createPost(PostDto postDto) {
-        Post post = new Post();
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
+        Post post = mapDtoToEntity(postDto);
         Post result = postRepository.save(post);
         PostDto response = new PostDto();
         response.setTitle(result.getTitle());
         response.setDescription(result.getDescription());
         response.setContent(result.getContent());
 
-        return response;
+        return mapEntityToDto(result);
     }
 
     @Override
@@ -65,16 +65,19 @@ public class PostServiceImpl implements PostService<PostDto,Long>, MapDtoEntity<
 
         Sort sort = Sort.Direction.valueOf(sortDirection.toUpperCase()).isAscending() ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
-
-
-
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Post> page = postRepository.findAll(pageable);
+        return setResponsePageContent(page);
+    }
 
+    private ResponsePage<PostDto> setResponsePageContent(Page<Post> page){
         ResponsePage<PostDto> responsePage = new ResponsePage<>();
+
         List<Post> postList = page.getContent();
+
         List<PostDto> postDtoList = postList.stream().map(this::mapEntityToDto)
                 .collect(Collectors.toList());
+
         responsePage.setContentResponse(postDtoList);
         responsePage.setPageNumber(page.getNumber());
         responsePage.setPageSize(page.getSize());
@@ -93,6 +96,11 @@ public class PostServiceImpl implements PostService<PostDto,Long>, MapDtoEntity<
                     postDto.setTitle(it.getTitle());
                     postDto.setContent(it.getContent());
                     postDto.setDescription(it.getDescription());
+                    postDto.setCreatedAt(it.getCreatedAt());
+                    postDto.setComments(it.getComments().stream()
+                            .map(com -> new CommentDto(com.getId(),com.getEmail(),
+                                    com.getContentComment(),com.getCreatedAt(), com.getPost().getId()))
+                            .collect(Collectors.toSet()));
                     return postDto;
                 }).orElse(new PostDto());
     }
@@ -106,6 +114,7 @@ public class PostServiceImpl implements PostService<PostDto,Long>, MapDtoEntity<
                     post.setTitle(it.getTitle());
                     post.setContent(it.getContent());
                     post.setDescription(it.getDescription());
+                    post.setCreatedAt(it.getCreatedAt());
                     return post;
                 }).orElse(new Post());
     }
