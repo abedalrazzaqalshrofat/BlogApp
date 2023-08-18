@@ -3,11 +3,13 @@ package com.newagetechsoft.BlogApp.services.impl;
 import com.newagetechsoft.BlogApp.model.Comment;
 import com.newagetechsoft.BlogApp.model.Post;
 import com.newagetechsoft.BlogApp.payload.CommentDto;
+import com.newagetechsoft.BlogApp.payload.ResponsePage;
 import com.newagetechsoft.BlogApp.repositories.CommentRepository;
 import com.newagetechsoft.BlogApp.services.CommentService;
 import com.newagetechsoft.BlogApp.util.MapDtoEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +20,13 @@ public class CommentServiceImpl implements CommentService, MapDtoEntity<Comment,
     public CommentServiceImpl(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
     }
+
+    @Override
+    public ResponsePage<CommentDto> getAllCommentsForPost(Long id) {
+        ResponsePage<CommentDto> responsePage = new ResponsePage<>();
+        return responsePage;
+    }
+
     @Override
     public CommentDto createComment(CommentDto commentDto, Long postId) {
         Comment comment = commentRepository.save(mapDtoToEntity(commentDto));

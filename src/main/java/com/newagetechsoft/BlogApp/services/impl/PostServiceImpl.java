@@ -33,7 +33,6 @@ public class PostServiceImpl implements PostService<PostDto,Long>, MapDtoEntity<
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
         Post result = postRepository.save(post);
-
         PostDto response = new PostDto();
         response.setTitle(result.getTitle());
         response.setDescription(result.getDescription());
