@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -14,7 +15,14 @@ import java.util.Objects;
 @NoArgsConstructor
 @Data
 @Entity
-public class Comment extends BaseEntity{
+public class Comment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @Column
     private String email;

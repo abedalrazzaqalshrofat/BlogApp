@@ -1,3 +1,4 @@
+
 package com.newagetechsoft.BlogApp.services.impl;
 
 import com.newagetechsoft.BlogApp.exception.ResourceNotFoundException;
@@ -32,6 +33,11 @@ public class PostServiceImpl implements PostService<PostDto,Long>, MapDtoEntity<
     public PostDto createPost(PostDto postDto) {
         Post post = mapDtoToEntity(postDto);
         Post result = postRepository.save(post);
+        PostDto response = new PostDto();
+        response.setTitle(result.getTitle());
+        response.setDescription(result.getDescription());
+        response.setContent(result.getContent());
+
         return mapEntityToDto(result);
     }
 
@@ -61,8 +67,7 @@ public class PostServiceImpl implements PostService<PostDto,Long>, MapDtoEntity<
                 : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Post> page = postRepository.findAll(pageable);
-        ResponsePage<PostDto> responsePage = setResponsePageContent(page);
-        return responsePage;
+        return setResponsePageContent(page);
     }
 
     private ResponsePage<PostDto> setResponsePageContent(Page<Post> page){

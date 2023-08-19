@@ -7,6 +7,7 @@ import com.newagetechsoft.BlogApp.services.PostService;
 import com.newagetechsoft.BlogApp.util.AppConstant;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,10 +22,12 @@ public class PostController {
         this.postService = postService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("createPost")
     public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){
         return new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
+
 
     @GetMapping()
     public ResponseEntity<ResponsePage<PostDto>> getAllPosts(
@@ -41,6 +44,7 @@ public class PostController {
         return ResponseEntity.ok(postService.getPostById(postId));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{postId}")
     public ResponseEntity<PostDto> updatePostById(@RequestBody PostDto postDto, @PathVariable("postId") Long postId){
         return new ResponseEntity<>(postService.updatePost(postDto,postId),HttpStatus.OK);

@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +28,13 @@ public class CommentServiceImpl implements CommentService, MapDtoEntity<Comment,
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
     }
+
+    @Override
+    public ResponsePage<CommentDto> getAllCommentsForPost(Long id) {
+        ResponsePage<CommentDto> responsePage = new ResponsePage<>();
+        return responsePage;
+    }
+
     @Override
     public CommentDto createComment(CommentDto commentDto, Long postId) {
         Post post = postRepository.findById(postId).orElse(new Post());

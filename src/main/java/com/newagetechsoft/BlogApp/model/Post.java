@@ -1,8 +1,10 @@
 package com.newagetechsoft.BlogApp.model;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -13,7 +15,14 @@ import java.util.Set;
 @ToString
 @Entity
 @Table(name = "post", uniqueConstraints = { })
-public class Post extends BaseEntity{
+public class Post {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     @Column(name = "title", nullable = false)
     private String title;
@@ -21,7 +30,7 @@ public class Post extends BaseEntity{
     private String description;
     @Column(name = "content", nullable = false)
     private String content;
-    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "post",fetch = FetchType.LAZY,cascade = {CascadeType.ALL},orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
 
     @Override

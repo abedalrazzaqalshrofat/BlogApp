@@ -5,6 +5,8 @@ import com.newagetechsoft.BlogApp.payload.ResponsePage;
 
 public interface CommentService {
 
+    ResponsePage<CommentDto> getAllCommentsForPost(Long id);
+
     CommentDto createComment(CommentDto commentDto, Long postId);
 
     ResponsePage<CommentDto> getAllCommentsForPost(Long postId, int pageNumber, int pageSize,
