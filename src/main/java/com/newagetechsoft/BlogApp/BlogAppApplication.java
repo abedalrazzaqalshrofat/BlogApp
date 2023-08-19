@@ -17,23 +17,22 @@ import java.util.Set;
 public class BlogAppApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BlogAppApplication.class, args);
-//		UserRepository userRepository = context.getBean(UserRepository.class);
-//		RoleRepository roleRepository = context.getBean(RoleRepository.class);
-//		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
-//
-//		User user = new User();
-//		user.setUsername("admin");
-//		user.setRoleName("admin");
-//		user.setEmail("admin@example.com");
-//		user.setPassword(passwordEncoder.encode("admin"));
-//
-//		Role role = new Role();
-//		role.setRoleName("ROLE_ADMIN");
-//		user.setRoles(Set.of(role));
-//
-//		userRepository.save(user);
-//		roleRepository.save(role);
+		ConfigurableApplicationContext context = SpringApplication.run(BlogAppApplication.class, args);
+		UserRepository userRepository = context.getBean(UserRepository.class);
+		RoleRepository roleRepository = context.getBean(RoleRepository.class);
+		PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
+
+		User user = new User();
+		user.setUsername("admin");
+		user.setEmail("admin@example.com");
+		user.setPassword(passwordEncoder.encode("admin"));
+
+		Role role = new Role();
+		role.setRoleName("ROLE_ADMIN");
+		user.setRoles(Set.of(role));
+
+		userRepository.save(user);
+		roleRepository.save(role);
 
 	}
 }
