@@ -52,5 +52,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(exceptionDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(BlogApiException.class)
+    public ResponseEntity<ExceptionDetails> blogApiExceptionResponseEntity(BlogApiException exception,
+                                                                           WebRequest webRequest){
+       ExceptionDetails exceptionDetails = new ExceptionDetails();
+       exceptionDetails.setTimestamp(LocalDateTime.now());
+       exceptionDetails.setMessage(exception.getMessage());
+       exceptionDetails.setDetail(webRequest.getDescription(false));
+
+       return new ResponseEntity<>(exceptionDetails,exception.getHttpStatus());
+    }
 
 }

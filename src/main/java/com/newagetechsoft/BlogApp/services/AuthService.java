@@ -1,8 +1,10 @@
 package com.newagetechsoft.BlogApp.services;
 
 import com.newagetechsoft.BlogApp.payload.LoginDto;
-import org.springframework.security.core.Authentication;
+import com.newagetechsoft.BlogApp.payload.RegistrationDto;
 
 public interface AuthService {
     String authenticate(LoginDto loginDto);
+
+    String registerUser(RegistrationDto registrationDto);
 }

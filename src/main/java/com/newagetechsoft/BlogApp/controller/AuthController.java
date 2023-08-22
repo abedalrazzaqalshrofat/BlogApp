@@ -1,6 +1,7 @@
 package com.newagetechsoft.BlogApp.controller;
 
 import com.newagetechsoft.BlogApp.payload.LoginDto;
+import com.newagetechsoft.BlogApp.payload.RegistrationDto;
 import com.newagetechsoft.BlogApp.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,4 +26,8 @@ public class AuthController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PostMapping(value = {"register", "signup"})
+    public ResponseEntity<String> register(@RequestBody RegistrationDto registrationDto){
+        return new ResponseEntity<>(authService.registerUser(registrationDto), HttpStatus.CREATED);
+    }
 }
